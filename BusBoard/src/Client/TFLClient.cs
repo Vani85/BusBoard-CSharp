@@ -2,8 +2,10 @@ using RestSharp;
 using BusBoard.src.DataClass;
 namespace BusBoard.src.Client {
     class TFLClient {
+        public static string TFLUrl = "https://api.tfl.gov.uk/";
+        public static string PostCodeUrl = "https://api.postcodes.io/";
         public static async Task<PostCodeAPIResponse> getPostCodeInformation(string postCode) {
-            var client = new RestClient("https://api.postcodes.io/");
+            var client = new RestClient(PostCodeUrl);
             var request = new RestRequest($"postcodes/{postCode}");
             var response = client.Get<PostCodeAPIResponse>(request);     
             if (response == null) {
@@ -15,7 +17,7 @@ namespace BusBoard.src.Client {
         }  
 
          public static async Task<StopPointsAPIResponse> getStopPointsForthePostCode(double latitude, double longitude) {
-            var client = new RestClient("https://api.tfl.gov.uk/");
+            var client = new RestClient(TFLUrl);
             var request = new RestRequest($"StopPoint/");
             request.AddQueryParameter("lat",latitude.ToString());
             request.AddQueryParameter("lon", longitude.ToString());
@@ -31,7 +33,7 @@ namespace BusBoard.src.Client {
         }  
 
         public static async Task<List<ArrivalsForAStopPoint>> getBussesForAGivenStopPoint(string stopPoint) {
-            var client = new RestClient("https://api.tfl.gov.uk/");
+            var client = new RestClient(TFLUrl);
             var request = new RestRequest($"StopPoint/{stopPoint}/Arrivals");
             var response = client.Get<List<ArrivalsForAStopPoint>>(request);
             if (response == null) {
@@ -41,7 +43,7 @@ namespace BusBoard.src.Client {
                 return response;
 
             }       
-        }  
+        }          
 
     }
 }
