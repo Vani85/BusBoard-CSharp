@@ -15,7 +15,8 @@ namespace BusBoard {
                 // Stop points to arrival information   
                 PrintReport printReport =  new PrintReport();        
                 foreach(var stop in stopPoints.stopPoints) {
-                    List<ArrivalsForAStopPoint> arrivals = await TFLClient.getBussesForAGivenStopPoint(stop.naptanId);            
+                    List<ArrivalsForAStopPoint> arrivals = await TFLClient.getBussesForAGivenStopPoint(stop.naptanId);    
+                    arrivals = SortAndSliceArrivals(arrivals);
                     printReport.printArrivalInformations(arrivals);
                 }
             } catch(Exception e) {
@@ -34,6 +35,14 @@ namespace BusBoard {
                     Console.WriteLine($"The postcode - {PostCode} is invalid.");
                 }
             }
+        }
+
+        public static List<ArrivalsForAStopPoint> SortAndSliceArrivals(List<ArrivalsForAStopPoint> arrivals) {
+            arrivals.Sort((x, y) => x.timeToStation.CompareTo(y.timeToStation));  
+            if(arrivals.Count() > 5) {
+                arrivals = arrivals.Slice(0,5);
+            }
+            return arrivals;
         }
     }
 }
