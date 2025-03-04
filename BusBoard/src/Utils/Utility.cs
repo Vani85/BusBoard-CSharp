@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using BusBoard.src.DataClass;
 
 namespace BusBoard.src.Utils;
 class Utility {
@@ -14,5 +15,20 @@ class Utility {
         } else  {
            return false;
         }
+    }
+    
+    public static List<ArrivalsForAStopPoint> SortAndSliceArrivals(List<ArrivalsForAStopPoint> arrivals) {
+        arrivals.Sort((x, y) => x.timeToStation.CompareTo(y.timeToStation));  
+        if(arrivals.Count() > 5) {
+            arrivals = arrivals.Slice(0,5);
+        }
+        return arrivals;
+    }
+    public static bool IsListEmpty<T>(List<T> list) {
+        return list.Count == 0;
+    }
+
+    public static int ConvertStringToInt(string input) {
+        return Convert.ToInt32(input);
     }
 }

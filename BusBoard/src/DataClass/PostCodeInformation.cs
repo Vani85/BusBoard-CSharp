@@ -5,6 +5,8 @@ namespace BusBoard.src.DataClass {
         public double longitude {get;set;}
     }
    public class PostCodeAPIResponse {
-        public required PostCodeInformation Result { get; set; }
+        public required int status  {get;set;}
+        public PostCodeInformation Result { get; set; }
+        public string error  {get;set;}
     }
 }
