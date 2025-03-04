@@ -1,49 +1,37 @@
 using RestSharp;
 using BusBoard.src.DataClass;
+using Microsoft.VisualBasic;
 namespace BusBoard.src.Client {
     class TFLClient {
-        public static string TFLUrl = "https://api.tfl.gov.uk/";
-        public static string PostCodeUrl = "https://api.postcodes.io/";
-        public static async Task<PostCodeAPIResponse> getPostCodeInformation(string postCode) {
-            var client = new RestClient(PostCodeUrl);
-            var request = new RestRequest($"postcodes/{postCode}");
-            var response = client.Get<PostCodeAPIResponse>(request);     
-            if (response == null) {
-                throw new Exception($"Failed to fetch data for postcode {postCode}:");
-            } else
-            {
-                return response;
-            }   
-        }  
-
-         public static async Task<StopPointsAPIResponse> getStopPointsForthePostCode(double latitude, double longitude) {
-            var client = new RestClient(TFLUrl);
-            var request = new RestRequest($"StopPoint/");
+        private static string TFLUrl = "https://api.tfl.gov.uk/";
+        private static RestClient client;
+        public static async Task<List<StopPointsForPostCode>> GetStopPointsForthePostCode(double latitude, double longitude) {
+            var request = getRestRequest($"StopPoint/");
             request.AddQueryParameter("lat",latitude.ToString());
             request.AddQueryParameter("lon", longitude.ToString());
             request.AddQueryParameter("stopTypes","NaptanPublicBusCoachTram");
             request.AddQueryParameter("modes","bus");
-            var response = client.Get<StopPointsAPIResponse>(request);     
+            var response = await client.GetAsync<StopPointsAPIResponse>(request);     
             if (response == null) {
                 throw new Exception($"Failed to fetch stop points for latitude : {latitude} and longitude : {longitude}");
-            } else
-            {
-                return response;
-            }   
+            }
+            return response.stopPoints;               
         }  
 
-        public static async Task<List<ArrivalsForAStopPoint>> getBussesForAGivenStopPoint(string stopPoint) {
-            var client = new RestClient(TFLUrl);
-            var request = new RestRequest($"StopPoint/{stopPoint}/Arrivals");
-            var response = client.Get<List<ArrivalsForAStopPoint>>(request);
+        public static async Task<List<ArrivalsForAStopPoint>> GetBussesForAGivenStopPoint(string stopPoint) {
+            var request = getRestRequest($"StopPoint/{stopPoint}/Arrivals");
+            var response = await client.GetAsync<List<ArrivalsForAStopPoint>>(request);
             if (response == null) {
                 throw new Exception($"Failed to fetch arrival information for stop point {stopPoint}:");
-            } else
-            {
-                return response;
-
-            }       
+            } 
+            return response;      
         }          
+
+        public static RestRequest getRestRequest(String resource) {
+            client = new RestClient(TFLUrl);
+            var request = new RestRequest(resource);
+            return request;
+        }
 
     }
 }
