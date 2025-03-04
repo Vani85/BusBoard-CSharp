@@ -25,7 +25,16 @@ namespace BusBoard.src.Client {
                 throw new Exception($"Failed to fetch arrival information for stop point : {stopPoint} ");
             } 
             return response;      
-        }          
+        }       
+
+        public static async Task<List<Journey>> GetDirectionToStopPoint(string postCode, string stopPoint) {
+            var request = GetRestRequest($"Journey/JourneyResults/{postCode}/to/{stopPoint}");
+            var response = await client.GetAsync<JourneyPlannerAPIResponse>(request);
+            if (response == null) {
+                throw new Exception($"Failed to fetch arrival information for stop point : {stopPoint} ");
+            } 
+            return response.journeys;      
+        }   
 
         public static RestRequest GetRestRequest(String resource) {
             client = new RestClient(TFLUrl);

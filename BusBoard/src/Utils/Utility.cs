@@ -27,4 +27,8 @@ class Utility {
     public static bool IsListEmpty<T>(List<T> list) {
         return list.Count == 0;
     }
+
+    public static int ConvertStringToInt(string input) {
+        return Convert.ToInt32(input);
+    }
 }

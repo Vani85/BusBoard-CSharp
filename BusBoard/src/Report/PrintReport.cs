@@ -19,4 +19,29 @@ class PrintReport() {
          Console.WriteLine("========================================================================================================================");        
         
     }
+
+
+     public void PrintJourneyPlanner(List<Journey> journeys) {
+        Console.WriteLine("=========================================================================================================================");   
+        Console.WriteLine("+-------------------------------+------------------------------+----------------------------+----------------------------+");
+        Console.WriteLine("| {0,-50} | {1,-30} | {2,-20} | {3,-20} |", "Step Description", "Step Direction", "Total Distance", "Total Time (in mins)");
+        Console.WriteLine("+-------------------------------+------------------------------+----------------------------+----------------------------+");
+        
+
+        foreach(var journey in journeys) {
+            foreach(var leg in journey.legs) {
+                Console.WriteLine("========================================================================================================================");
+                Console.WriteLine(leg.instruction.summary);
+                Console.WriteLine("========================================================================================================================");
+                foreach(var step in leg.instruction.steps) {
+                    Console.WriteLine("| {0,-50} | {1,-30} | {2,-20} | {3,-20} |", 
+                        step.description.Trim(),
+                        step.turnDirection.Trim(),
+                        step.distance,
+                        step.cumulativeTravelTime);  
+                }
+            }
+        }
+        Console.WriteLine("+-------------------------------+------------------------------+----------------------------+----------------------------+");
+   }
 }

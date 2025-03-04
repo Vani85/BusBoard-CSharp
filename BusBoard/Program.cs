@@ -23,10 +23,17 @@ namespace BusBoard {
                         } else {
                             Console.WriteLine($"Could not find any arrivals at the stop point : {stop.commonName}");
                         }
+                    }                
+
+                    if(UserInput.GetJourneyPlannerChoice().Equals("Y")) {
+                        string ChoosenStopPoint = UserInput.ChooseTheStopPoint(stopPoints);
+                        List<Journey> journeys = await TFLClient.GetDirectionToStopPoint(postCode, ChoosenStopPoint); 
+                        printReport.PrintJourneyPlanner(journeys);
                     }
                 } else {
                     Console.WriteLine($"Could not find any stop points near the postcode - {postCode}");
                 }
+
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
             }

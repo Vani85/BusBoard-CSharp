@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace BusBoard.src.DataClass {
     public class PostCodeInformation {
         public required string postcode {get;set;}
