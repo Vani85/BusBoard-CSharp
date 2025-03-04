@@ -12,24 +12,25 @@ namespace BusBoard {
                 List<StopPointsForPostCode> stopPoints = await TFLClient.GetStopPointsForthePostCode(postCodeInfo.latitude,postCodeInfo.longitude);                
                 Console.WriteLine($"Count of stop points near the postcode - {postCode} is {stopPoints.Count()}");
 
-                // Stop points to arrival information   
-                PrintReport printReport =  new PrintReport();        
-                foreach(var stop in stopPoints.stopPoints) {
-                    List<ArrivalsForAStopPoint> arrivals = await TFLClient.GetBussesForAGivenStopPoint(stop.naptanId);    
-                    arrivals = SortAndSliceArrivals(arrivals);
-                    printReport.printArrivalInformations(arrivals);
+                if(!Utility.IsListEmpty(stopPoints)) {
+                    // Stop points to arrival information   
+                    PrintReport printReport =  new PrintReport();        
+                    foreach(var stop in stopPoints) {
+                        List<ArrivalsForAStopPoint> arrivals = await TFLClient.GetBussesForAGivenStopPoint(stop.naptanId);  
+                        if(!Utility.IsListEmpty(stopPoints)) {
+                            arrivals = Utility.SortAndSliceArrivals(arrivals);
+                            printReport.printArrivalInformations(arrivals);
+                        } else {
+                            Console.WriteLine($"Could not find any arrivals at the stop point : {stop.commonName}");
+                        }
+                    }
+                } else {
+                    Console.WriteLine($"Could not find any stop points near the postcode - {postCode}");
                 }
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
             }
         }
 
-        public static List<ArrivalsForAStopPoint> SortAndSliceArrivals(List<ArrivalsForAStopPoint> arrivals) {
-            arrivals.Sort((x, y) => x.timeToStation.CompareTo(y.timeToStation));  
-            if(arrivals.Count() > 5) {
-                arrivals = arrivals.Slice(0,5);
-            }
-            return arrivals;
-        }
     }
 }
